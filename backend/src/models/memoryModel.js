@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 
 const memorySchema = new mongoose.Schema({
-  title: String,
-  desc: String,
-  lat: Number,
-  lng: Number,
-  date: String,
+  title: { type: String, required: true },
+  desc: { type: String },
+  lat: { type: Number },
+  lng: { type: Number },
   tags: [String],
-  imageUrl: String,
+  date: { type: String },
+  imageUrl: { type: String },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   createdAt: { type: Date, default: Date.now },
 });
