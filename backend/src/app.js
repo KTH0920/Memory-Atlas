@@ -12,22 +12,33 @@ const adminRoutes = require("./routes/adminRoutes");
 dotenv.config();
 const app = express();
 
-// 미들웨어
-app.use(cors());
+// ======================= 미들웨어 =======================
+
+// CORS 허용 (React 프론트엔드 연결 대비)
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "*", // 필요 시 Vercel URL로 변경
+    credentials: true,
+  })
+);
+
+// JSON 데이터 파싱
 app.use(express.json());
+
+// 요청 로깅 (개발용)
 app.use(morgan("dev"));
 
-// DB 연결
+// ======================= DB 연결 =======================
 connectDB();
 
-// 라우트 연결
+// ======================= 라우트 연결 =======================
 app.use("/api/auth", authRoutes);
 app.use("/api/memories", memoryRoutes);
 app.use("/api/admin", adminRoutes);
 
-// 기본 응답
+// ======================= 기본 경로 =======================
 app.get("/", (req, res) => {
-  res.send("Memory Atlas Backend Running...");
+  res.send("🚀 Memory Atlas Backend Running...");
 });
 
 module.exports = app;
