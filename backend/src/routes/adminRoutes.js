@@ -1,15 +1,18 @@
 const express = require("express");
 const router = express.Router();
+const { verifyToken } = require("../middleware/authMiddleware");
 const { verifyAdmin } = require("../middleware/adminMiddleware");
-const { getAllUsers, getAllMemories, getDashboardStats } = require("../controllers/adminController");
+const {
+  getAllUsers,
+  getAllMemories,
+  getDashboardStats,
+  deleteUser,
+} = require("../controllers/adminController");
 
-// 모든 유저 조회
-router.get("/users", verifyAdmin, getAllUsers);
-
-// 모든 추억 조회
-router.get("/memories", verifyAdmin, getAllMemories);
-
-// 관리자 대시보드 통계
-router.get("/stats", verifyAdmin, getDashboardStats);
+// ✅ 관리자 전용 라우트 (모두 JWT + 관리자 권한 필요)
+router.get("/users", verifyToken, verifyAdmin, getAllUsers);
+router.get("/memories", verifyToken, verifyAdmin, getAllMemories);
+router.get("/stats", verifyToken, verifyAdmin, getDashboardStats);
+router.delete("/deleteUser/:id", verifyToken, verifyAdmin, deleteUser);
 
 module.exports = router;

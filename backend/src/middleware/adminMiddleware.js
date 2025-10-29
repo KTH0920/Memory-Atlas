@@ -1,21 +1,12 @@
-const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
-dotenv.config();
-
+// 관리자만 접근 허용
 const verifyAdmin = (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "No token provided" });
-
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (decoded.role !== "admin") {
-      return res.status(403).json({ message: "관리자 권한이 없습니다." });
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "관리자만 접근 가능합니다." });
     }
-
-    req.user = decoded;
     next();
-  } catch (err) {
-    res.status(403).json({ message: "Invalid token" });
+  } catch (error) {
+    res.status(500).json({ message: "관리자 인증 오류" });
   }
 };
 

@@ -5,16 +5,24 @@ const { upload } = require("../utils/upload");
 const {
   createMemory,
   getAllMemories,
+  getMemoryById,
+  updateMemory,
   deleteMemory,
 } = require("../controllers/memoryController");
 
-// 이미지 업로드 + 추억 등록
+// 추억 등록 (이미지 업로드 포함)
 router.post("/", verifyToken, upload.single("image"), createMemory);
 
-// 전체 추억 조회 (공개용)
+// 전체 추억 조회 (공개)
 router.get("/", getAllMemories);
 
-// 특정 추억 삭제 (본인 또는 관리자)
+// 단일 추억 상세 조회
+router.get("/:id", getMemoryById);
+
+// 추억 수정 (본인만 가능)
+router.patch("/:id", verifyToken, upload.single("image"), updateMemory);
+
+// 추억 삭제 (본인만 가능)
 router.delete("/:id", verifyToken, deleteMemory);
 
 module.exports = router;
