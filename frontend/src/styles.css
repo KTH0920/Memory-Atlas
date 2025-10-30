@@ -1,46 +1,180 @@
+/* ======================= 기본 설정 ======================= */
 body {
-  font-family: 'Pretendard', sans-serif;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
   background: #f9fbff;
   margin: 0;
   padding: 0;
+  color: #222;
 }
 
+/* ======================= 공통 컨테이너 ======================= */
 .container {
   max-width: 600px;
   margin: 60px auto;
   padding: 20px;
   background: white;
   border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-input, textarea, button {
+/* ======================= 입력폼, 버튼, 테이블 ======================= */
+input,
+textarea,
+button {
   display: block;
   width: 100%;
   margin-bottom: 15px;
-  padding: 10px;
+  padding: 12px 14px;
   border-radius: 8px;
   border: 1px solid #ddd;
   font-size: 16px;
+  box-sizing: border-box;
 }
 
 button {
-  background: #0078ff;
+  background: #4f7cff;
   color: white;
   border: none;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.25s ease;
 }
 
+button:hover {
+  background: #3a66e0;
+}
+
+/* ======================= 테이블 ======================= */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background: #f4f6ff;
+}
+
+.stats p {
+  margin: 5px 0;
+}
+
+/* ======================= 카드형 메모리 리스트 ======================= */
 .memory-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 15px;
+  justify-content: center;
 }
 
 .memory-card {
   background: #fff;
-  border-radius: 10px;
-  padding: 10px;
-  width: 250px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  padding: 15px;
+  width: 240px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.memory-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* ======================= 로그인 화면 ======================= */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #f9fbff;
+}
+
+.login-container h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #222;
+  text-align: center;
+}
+
+.login-form {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background: #4f7cff;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.login-btn:hover {
+  background: #3a66e0;
+}
+
+/* ======================= 로그인 하단 텍스트 링크 ======================= */
+.register-text {
+  font-size: 14px;
+  color: #555;
+  margin-top: 18px;
+  text-align: center;
+}
+
+.register-link {
+  color: #4f7cff;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.register-link:hover {
+  color: #3559c7;
+  text-decoration: underline;
+}
+
+/* ======================= 반응형 ======================= */
+@media (max-width: 480px) {
+  .login-form {
+    padding: 30px 25px;
+  }
+
+  input,
+  button {
+    font-size: 15px;
+  }
+
+  .login-btn {
+    font-size: 16px;
+  }
 }

@@ -1,28 +1,31 @@
 import React, { useState } from "react";
-import { api } from "../api/client";
 import { useNavigate } from "react-router-dom";
+import { api } from "../api/client";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const res = await api.post("/auth/login", { email, password });
       localStorage.setItem("token", res.data.token);
-      alert("로그인 성공!");
-      navigate("/dashboard");
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      const role = res.data.user.role;
+      if (role === "admin") navigate("/admin");
+      else navigate("/dashboard");
     } catch (err) {
-      alert("로그인 실패: " + err.response?.data?.message);
+      alert("❌ 로그인 실패: " + (err.response?.data?.message || "서버 오류"));
     }
   };
 
   return (
-    <div className="container">
-      <h2>로그인</h2>
-      <form onSubmit={handleLogin}>
+    <div className="login-container">
+      <h1>로그인</h1>
+      <form onSubmit={handleLogin} className="login-form">
         <input
           type="email"
           placeholder="이메일"
@@ -37,11 +40,15 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit">로그인</button>
+        <button type="submit" className="login-btn">로그인</button>
+
+        <p className="register-text">
+          아직 계정이 없으신가요?{" "}
+          <span className="register-link" onClick={() => navigate("/register")}>
+            회원가입
+          </span>
+        </p>
       </form>
-      <p>
-        계정이 없나요? <a href="/register">회원가입</a>
-      </p>
     </div>
   );
 };
