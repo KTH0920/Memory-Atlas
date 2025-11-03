@@ -88,6 +88,104 @@ th {
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
 }
 
+.memory-card img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  object-fit: cover;
+}
+
+.memory-card h3 {
+  font-size: 1.1rem;
+  color: #333;
+  margin: 5px 0;
+}
+
+.memory-card p {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.memory-card .date {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.delete-btn {
+  background: #e74c3c;
+  color: #fff;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  transition: background 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #c0392b;
+}
+
+/* ======================= Dashboard ======================= */
+.dashboard-container {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.page-title {
+  color: #0044cc;
+  font-weight: 700;
+  margin-bottom: 25px;
+  font-size: 1.6rem;
+}
+
+.memory-form {
+  background: #f7f9ff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 35px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.memory-form input[type="text"],
+.memory-form textarea {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.memory-form button {
+  width: 100%;
+  padding: 12px;
+  background: #4f7cff;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.memory-form button:hover {
+  background: #3a66e0;
+}
+
+.empty-text {
+  color: #777;
+  font-size: 1rem;
+  margin-top: 20px;
+}
+
 /* ======================= 로그인 화면 ======================= */
 .login-container {
   display: flex;
@@ -176,5 +274,13 @@ th {
 
   .login-btn {
     font-size: 16px;
+  }
+
+  .memory-card {
+    width: 100%;
+  }
+
+  .dashboard-container {
+    margin: 30px 10px;
   }
 }

@@ -1,35 +1,15 @@
 const Memory = require("../models/memoryModel");
-const { S3Client, PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
-const { v4: uuidv4 } = require("uuid");
-require("dotenv").config();
-
-// S3 클라이언트 설정
-const s3 = new S3Client({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_SECRET_KEY,
-  },
-});
 
 // ======================== 추억 등록 ========================
 const createMemory = async (req, res) => {
   try {
     const { title, desc, tags, lat, lng, date } = req.body;
-    if (!req.file) return res.status(400).json({ message: "이미지 파일이 필요합니다." });
 
-    const key = `memory/${uuidv4()}_${req.file.originalname}`;
-    await s3.send(
-      new PutObjectCommand({
-        Bucket: process.env.AWS_BUCKET,
-        Key: key,
-        Body: req.file.buffer,
-        ContentType: req.file.mimetype,
-        ACL: "public-read",
-      })
-    );
+    if (!req.file) {
+      return res.status(400).json({ message: "이미지 파일이 필요합니다." });
+    }
 
-    const imageUrl = `https://${process.env.AWS_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+    const imageUrl = req.file.location; // ✅ multer-s3가 자동으로 S3 업로드 후 location 반환
 
     const memory = new Memory({
       title,
@@ -84,23 +64,9 @@ const updateMemory = async (req, res) => {
       return res.status(403).json({ message: "본인의 추억만 수정할 수 있습니다." });
     }
 
-    // 새 이미지 업로드 시, 기존 이미지 삭제 후 교체
+    // 새 이미지 업로드 시 교체
     if (req.file) {
-      const oldKey = memory.imageUrl.split(".amazonaws.com/")[1];
-      await s3.send(new DeleteObjectCommand({ Bucket: process.env.AWS_BUCKET, Key: oldKey }));
-
-      const newKey = `memory/${uuidv4()}_${req.file.originalname}`;
-      await s3.send(
-        new PutObjectCommand({
-          Bucket: process.env.AWS_BUCKET,
-          Key: newKey,
-          Body: req.file.buffer,
-          ContentType: req.file.mimetype,
-          ACL: "public-read",
-        })
-      );
-
-      memory.imageUrl = `https://${process.env.AWS_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${newKey}`;
+      memory.imageUrl = req.file.location;
     }
 
     if (title) memory.title = title;
@@ -126,9 +92,7 @@ const deleteMemory = async (req, res) => {
       return res.status(403).json({ message: "본인의 추억만 삭제할 수 있습니다." });
     }
 
-    const key = memory.imageUrl.split(".amazonaws.com/")[1];
-    await s3.send(new DeleteObjectCommand({ Bucket: process.env.AWS_BUCKET, Key: key }));
-
+    // 단순히 DB에서 삭제 (S3에서도 지우려면 별도 AWS SDK v2 호출 추가 가능)
     await memory.deleteOne();
     res.json({ message: "추억 삭제 완료" });
   } catch (error) {

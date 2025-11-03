@@ -12,7 +12,7 @@ const Login = () => {
     try {
       const res = await api.post("/auth/login", { email, password });
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("user", JSON.stringify(  res.data.user));
 
       const role = res.data.user.role;
       if (role === "admin") navigate("/admin");

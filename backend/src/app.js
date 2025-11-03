@@ -17,7 +17,7 @@ const app = express();
 // CORS 허용 (React 프론트엔드 연결 대비)
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "*", // 필요 시 Vercel URL로 변경
+    origin: process.env.FRONT_ORIGIN || "*", // 필요 시 Vercel URL로 변경
     credentials: true,
   })
 );
