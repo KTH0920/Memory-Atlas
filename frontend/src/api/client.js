@@ -13,3 +13,17 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+// 응답 인터셉터 - 토큰 만료 시 자동 로그아웃
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err.response?.status === 401) {
+      alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
+    }
+    return Promise.reject(err);
+  }
+);

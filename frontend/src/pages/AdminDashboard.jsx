@@ -47,9 +47,15 @@ const AdminDashboard = () => {
 
       <section className="stats">
         <h2>📊 통계</h2>
-        <p>전체 유저 수: <b>{stats.userCount}</b></p>
-        <p>전체 추억 수: <b>{stats.memoryCount}</b></p>
-        <p>최근 7일 등록된 추억: <b>{stats.recentMemories}</b></p>
+        <p>
+          전체 유저 수: <b>{stats.userCount}</b>
+        </p>
+        <p>
+          전체 추억 수: <b>{stats.memoryCount}</b>
+        </p>
+        <p>
+          최근 7일 등록된 추억: <b>{stats.recentMemories}</b>
+        </p>
       </section>
 
       <hr />
@@ -71,7 +77,11 @@ const AdminDashboard = () => {
                 <td>{u.email}</td>
                 <td>{u.nickname}</td>
                 <td>{u.role}</td>
-                <td>{new Date(u.createdAt).toLocaleDateString()}</td>
+                <td>
+                  {u.createdAt
+                    ? new Date(u.createdAt).toLocaleDateString()
+                    : "-"}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -89,8 +99,9 @@ const AdminDashboard = () => {
               <h3>{m.title}</h3>
               <p>{m.desc}</p>
               <small>
-                작성자: {m.createdBy?.nickname || "알 수 없음"}  
-                <br /> {new Date(m.date).toLocaleDateString()}
+                작성자: {m.createdBy?.nickname || "알 수 없음"}
+                <br />
+                {m.date ? new Date(m.date).toLocaleDateString() : "-"}
               </small>
             </div>
           ))}

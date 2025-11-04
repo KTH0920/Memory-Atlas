@@ -6,7 +6,7 @@ const memorySchema = new mongoose.Schema({
   lat: { type: Number },
   lng: { type: Number },
   tags: [String],
-  date: { type: String },
+  date: { type: Date, default: Date.now },
   imageUrl: { type: String },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   createdAt: { type: Date, default: Date.now },

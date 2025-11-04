@@ -14,7 +14,7 @@ const {
 router.post("/", verifyToken, upload.single("image"), createMemory);
 
 // 전체 추억 조회 (공개)
-router.get("/", getAllMemories);
+router.get("/", verifyToken, getAllMemories);
 
 // 단일 추억 상세 조회
 router.get("/:id", getMemoryById);

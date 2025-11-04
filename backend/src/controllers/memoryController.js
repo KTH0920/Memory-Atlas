@@ -1,15 +1,44 @@
+const { S3Client, PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const Memory = require("../models/memoryModel");
+const { v4: uuidv4 } = require("uuid");
+
+require("dotenv").config();
+
+// ✅ AWS S3 클라이언트 설정
+const s3 = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_KEY,
+  },
+});
 
 // ======================== 추억 등록 ========================
 const createMemory = async (req, res) => {
   try {
     const { title, desc, tags, lat, lng, date } = req.body;
+    if (!req.file) return res.status(400).json({ message: "이미지 파일이 필요합니다." });
 
-    if (!req.file) {
-      return res.status(400).json({ message: "이미지 파일이 필요합니다." });
-    }
+    console.log("🔍 AWS KEYS:", {
+      region: process.env.AWS_REGION,
+      bucket: process.env.AWS_BUCKET,
+      access: process.env.AWS_ACCESS_KEY ? "✅ OK" : "❌ MISSING",
+      secret: process.env.AWS_SECRET_KEY ? "✅ OK" : "❌ MISSING",
+    });
 
-    const imageUrl = req.file.location; // ✅ multer-s3가 자동으로 S3 업로드 후 location 반환
+    const key = `memory/${uuidv4()}_${req.file.originalname}`;
+
+    await s3.send(
+      new PutObjectCommand({
+        Bucket: process.env.AWS_BUCKET,
+        Key: key,
+        Body: req.file.buffer,
+        ContentType: req.file.mimetype,
+        ACL: "public-read",
+      })
+    );
+
+    const imageUrl = `https://${process.env.AWS_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
 
     const memory = new Memory({
       title,
@@ -30,10 +59,13 @@ const createMemory = async (req, res) => {
   }
 };
 
-// ======================== 전체 추억 조회 ========================
+// ======================== 전체 추억 조회 (본인만) ========================
 const getAllMemories = async (req, res) => {
   try {
-    const memories = await Memory.find().populate("createdBy", "email nickname");
+    const userId = req.user.id; // ✅ JWT에서 현재 로그인한 사용자 ID 추출
+    const memories = await Memory.find({ createdBy: userId })
+      .populate("createdBy", "email nickname")
+      .sort({ date: -1 }); // 최신순 정렬(optional)
     res.json(memories);
   } catch (error) {
     console.error("getAllMemories Error:", error.message);

@@ -284,3 +284,23 @@ th {
     margin: 30px 10px;
   }
 }
+
+/* ======================= 로그아웃 버튼 (최종 수정) ======================= */
+.logout-btn {
+  background: #ff5c5c;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease;
+  width: auto !important;   /* ✅ 버튼 가로길이 자동으로 조정 */
+  display: inline-block;    /* ✅ 인라인 형태로 작게 */
+  min-width: 80px;          /* ✅ 최소 너비 지정 (모양 일정하게 유지) */
+}
+
+.logout-btn:hover {
+  background: #e74c3c;
+}
