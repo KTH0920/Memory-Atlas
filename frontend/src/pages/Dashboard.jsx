@@ -10,10 +10,11 @@ const Dashboard = () => {
   const [desc, setDesc] = useState("");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [editMode, setEditMode] = useState(null);
-  const [editTitle, setEditTitle] = useState("");
-  const [editDesc, setEditDesc] = useState("");
-  const [editImage, setEditImage] = useState(null);
+  const [lat, setLat] = useState(null);
+  const [lng, setLng] = useState(null);
+  const [map, setMap] = useState(null);
+  const [marker, setMarker] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // ✅ 로그인 유저의 추억 목록 불러오기
   const fetchMemories = async () => {
@@ -38,18 +39,107 @@ const Dashboard = () => {
     }
   };
 
+  // ✅ 지도 보기 이동
+  const handleMapView = () => {
+    navigate("/map");
+  };
+
+  // ✅ 지도 초기화 (마커 1개만 표시)
+  useEffect(() => {
+    const loadMap = () => {
+      if (window.kakao && window.kakao.maps) {
+        window.kakao.maps.load(() => {
+          const container = document.getElementById("mini-map");
+          const options = {
+            center: new window.kakao.maps.LatLng(37.5665, 126.9780), // 기본 위치: 서울
+            level: 5,
+          };
+
+          const mapInstance = new window.kakao.maps.Map(container, options);
+          setMap(mapInstance);
+
+          // 클릭 이벤트 등록
+          window.kakao.maps.event.addListener(mapInstance, "click", (mouseEvent) => {
+            const latlng = mouseEvent.latLng;
+
+            // 기존 마커 제거
+            if (marker) {
+              marker.setMap(null);
+            }
+
+            // 새 마커 생성
+            const newMarker = new window.kakao.maps.Marker({
+              position: latlng,
+              map: mapInstance,
+            });
+
+            setMarker(newMarker);
+            setLat(latlng.getLat());
+            setLng(latlng.getLng());
+          });
+        });
+      }
+    };
+
+    // SDK 로드 (중복 방지)
+    if (!window.kakao || !window.kakao.maps) {
+      const script = document.createElement("script");
+      script.src =
+        "//dapi.kakao.com/v2/maps/sdk.js?appkey=a9f14bb72d3f4b51ca67f444ebd92694&libraries=services&autoload=false";
+      script.async = true;
+      script.onload = loadMap;
+      document.head.appendChild(script);
+    } else {
+      loadMap();
+    }
+  }, []); // marker 제외 (중요!)
+
+  // ✅ 장소 검색
+  const handleSearch = () => {
+    if (!searchQuery.trim() || !map) return;
+
+    const ps = new window.kakao.maps.services.Places();
+
+    ps.keywordSearch(searchQuery, (data, status) => {
+      if (status === window.kakao.maps.services.Status.OK) {
+        const place = data[0];
+        const coords = new window.kakao.maps.LatLng(place.y, place.x);
+
+        // 기존 마커 제거
+        if (marker) marker.setMap(null);
+
+        // 새 마커 표시
+        const newMarker = new window.kakao.maps.Marker({
+          map: map,
+          position: coords,
+        });
+
+        setMarker(newMarker);
+        map.setCenter(coords);
+
+        setLat(coords.getLat());
+        setLng(coords.getLng());
+      } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
+        alert("검색 결과가 없습니다.");
+      } else {
+        alert("검색 중 오류가 발생했습니다.");
+      }
+    });
+  };
+
   // ✅ 추억 추가
   const handleAddMemory = async (e) => {
     e.preventDefault();
-    if (!image) {
-      alert("이미지를 선택해주세요!");
-      return;
-    }
+    if (!image) return alert("이미지를 선택해주세요!");
+    if (!lat || !lng) return alert("지도를 클릭하거나 장소를 검색하세요!");
+
     setLoading(true);
     const formData = new FormData();
     formData.append("title", title);
     formData.append("desc", desc);
     formData.append("image", image);
+    formData.append("lat", lat);
+    formData.append("lng", lng);
 
     try {
       await api.post("/memories", formData, {
@@ -59,6 +149,9 @@ const Dashboard = () => {
       setTitle("");
       setDesc("");
       setImage(null);
+      setLat(null);
+      setLng(null);
+      if (marker) marker.setMap(null);
       fetchMemories();
     } catch (err) {
       console.error("추억 등록 실패:", err);
@@ -80,53 +173,19 @@ const Dashboard = () => {
     }
   };
 
-  // ✅ 수정 모드 진입
-  const handleEdit = (memory) => {
-    setEditMode(memory._id);
-    setEditTitle(memory.title);
-    setEditDesc(memory.desc);
-    setEditImage(null);
-  };
-
-  // ✅ 수정 취소
-  const handleCancelEdit = () => {
-    setEditMode(null);
-    setEditTitle("");
-    setEditDesc("");
-    setEditImage(null);
-  };
-
-  // ✅ 수정 저장
-  const handleUpdate = async (id) => {
-    setLoading(true);
-    const formData = new FormData();
-    formData.append("title", editTitle);
-    formData.append("desc", editDesc);
-    if (editImage) formData.append("image", editImage);
-
-    try {
-      await api.patch(`/memories/${id}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      alert("추억이 수정되었습니다!");
-      setEditMode(null);
-      fetchMemories();
-    } catch (err) {
-      console.error("수정 실패:", err);
-      alert("수정 중 오류가 발생했습니다.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="dashboard-container">
-      {/* ✅ 상단 헤더 */}
+      {/* 상단 헤더 */}
       <div className="dashboard-header">
         <h1 className="page-title">📸 나의 추억 아카이브</h1>
-        <button className="logout-btn" onClick={handleLogout}>
-          로그아웃
-        </button>
+        <div className="header-buttons">
+          <button className="map-btn" onClick={handleMapView}>
+            지도 보기
+          </button>
+          <button className="logout-btn" onClick={handleLogout}>
+            로그아웃
+          </button>
+        </div>
       </div>
 
       {/* 업로드 폼 */}
@@ -149,6 +208,38 @@ const Dashboard = () => {
           accept="image/*"
           onChange={(e) => setImage(e.target.files[0])}
         />
+
+        {/* 🔍 검색창 */}
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="장소를 검색하세요 (예: 진접역)"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button type="button" onClick={handleSearch}>
+            검색
+          </button>
+        </div>
+
+        {/* 지도 */}
+        <div
+          id="mini-map"
+          style={{
+            width: "100%",
+            height: "300px",
+            borderRadius: "10px",
+            marginBottom: "15px",
+            backgroundColor: "#f9f9f9",
+          }}
+        ></div>
+
+        {lat && lng && (
+          <p style={{ color: "#333", fontSize: "0.9rem" }}>
+            📍 선택된 위치: {lat.toFixed(5)}, {lng.toFixed(5)}
+          </p>
+        )}
+
         <button type="submit" disabled={loading}>
           {loading ? "업로드 중..." : "추억 추가"}
         </button>
@@ -161,59 +252,28 @@ const Dashboard = () => {
         ) : (
           memories.map((m) => (
             <div key={m._id} className="memory-card">
-              {editMode === m._id ? (
-                <>
-                  <input
-                    type="text"
-                    value={editTitle}
-                    onChange={(e) => setEditTitle(e.target.value)}
-                  />
-                  <textarea
-                    value={editDesc}
-                    onChange={(e) => setEditDesc(e.target.value)}
-                  />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setEditImage(e.target.files[0])}
-                  />
-                  <button
-                    onClick={() => handleUpdate(m._id)}
-                    disabled={loading}
-                  >
-                    {loading ? "수정 중..." : "저장"}
-                  </button>
-                  <button onClick={handleCancelEdit}>취소</button>
-                </>
-              ) : (
-                <>
-                  {m.imageUrl && (
-                    <img
-                      src={m.imageUrl}
-                      alt={m.title}
-                      style={{
-                        width: "100%",
-                        borderRadius: "10px",
-                        marginBottom: "10px",
-                      }}
-                    />
-                  )}
-                  <h3>{m.title}</h3>
-                  <p>{m.desc}</p>
-                  <span className="date">
-                    {new Date(m.date).toLocaleDateString()}
-                  </span>
-                  <div className="btn-group">
-                    <button onClick={() => handleEdit(m)}>수정</button>
-                    <button
-                      className="delete-btn"
-                      onClick={() => handleDelete(m._id)}
-                    >
-                      삭제
-                    </button>
-                  </div>
-                </>
+              {m.imageUrl && (
+                <img
+                  src={m.imageUrl}
+                  alt={m.title}
+                  style={{
+                    width: "100%",
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+                  }}
+                />
               )}
+              <h3>{m.title}</h3>
+              <p>{m.desc}</p>
+              <span className="date">
+                {new Date(m.date).toLocaleDateString()}
+              </span>
+              <button
+                className="delete-btn"
+                onClick={() => handleDelete(m._id)}
+              >
+                삭제
+              </button>
             </div>
           ))
         )}

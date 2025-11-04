@@ -136,7 +136,7 @@ th {
   padding: 20px;
   background: #fff;
   border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 5px 15px rgb(0, 0, 0);
   text-align: center;
 }
 
@@ -208,7 +208,7 @@ th {
   background: #ffffff;
   padding: 40px;
   border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 5px 15px rgb(0, 0, 0);
   width: 100%;
   max-width: 420px;
   text-align: center;
@@ -303,4 +303,60 @@ th {
 
 .logout-btn:hover {
   background: #e74c3c;
+}
+
+/* ======================= 지도 보기 버튼 ======================= */
+.header-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.map-btn {
+  background: #4f7cff;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease;
+  width: auto !important;
+}
+
+.map-btn:hover {
+  background: #3559c7;
+}
+
+/* ======================= 지도 검색 ======================= */
+.search-container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.search-container input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.search-container button {
+  padding: 10px 16px;
+  background-color: #4f7cff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  width: auto !important;
+}
+
+.search-container button:hover {
+  background-color: #3a66e0;
 }
