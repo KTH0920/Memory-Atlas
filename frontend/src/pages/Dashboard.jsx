@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import "../styles.css";
@@ -13,7 +13,7 @@ const Dashboard = () => {
   const [lat, setLat] = useState(null);
   const [lng, setLng] = useState(null);
   const [map, setMap] = useState(null);
-  const [marker, setMarker] = useState(null);
+  const markerRef = useRef(null); // useState 대신 useRef 사용
   const [searchQuery, setSearchQuery] = useState("");
 
   // ✅ 로그인 유저의 추억 목록 불러오기
@@ -63,8 +63,8 @@ const Dashboard = () => {
             const latlng = mouseEvent.latLng;
 
             // 기존 마커 제거
-            if (marker) {
-              marker.setMap(null);
+            if (markerRef.current) {
+              markerRef.current.setMap(null);
             }
 
             // 새 마커 생성
@@ -73,7 +73,7 @@ const Dashboard = () => {
               map: mapInstance,
             });
 
-            setMarker(newMarker);
+            markerRef.current = newMarker;
             setLat(latlng.getLat());
             setLng(latlng.getLng());
           });
@@ -106,7 +106,7 @@ const Dashboard = () => {
         const coords = new window.kakao.maps.LatLng(place.y, place.x);
 
         // 기존 마커 제거
-        if (marker) marker.setMap(null);
+        if (markerRef.current) markerRef.current.setMap(null);
 
         // 새 마커 표시
         const newMarker = new window.kakao.maps.Marker({
@@ -114,7 +114,7 @@ const Dashboard = () => {
           position: coords,
         });
 
-        setMarker(newMarker);
+        markerRef.current = newMarker;
         map.setCenter(coords);
 
         setLat(coords.getLat());
@@ -151,7 +151,7 @@ const Dashboard = () => {
       setImage(null);
       setLat(null);
       setLng(null);
-      if (marker) marker.setMap(null);
+      if (markerRef.current) markerRef.current.setMap(null);
       fetchMemories();
     } catch (err) {
       console.error("추억 등록 실패:", err);
