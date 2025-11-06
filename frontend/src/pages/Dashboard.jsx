@@ -50,6 +50,11 @@ const Dashboard = () => {
       if (window.kakao && window.kakao.maps) {
         window.kakao.maps.load(() => {
           const container = document.getElementById("mini-map");
+          if (!container) {
+            console.error("mini-map 컨테이너를 찾을 수 없습니다.");
+            return;
+          }
+
           const options = {
             center: new window.kakao.maps.LatLng(37.5665, 126.9780), // 기본 위치: 서울
             level: 5,
@@ -57,6 +62,9 @@ const Dashboard = () => {
 
           const mapInstance = new window.kakao.maps.Map(container, options);
           setMap(mapInstance);
+
+          console.log("✅ 지도 초기화 완료");
+          console.log("✅ services 사용 가능:", !!window.kakao.maps.services);
 
           // 클릭 이벤트 등록
           window.kakao.maps.event.addListener(mapInstance, "click", (mouseEvent) => {
@@ -81,16 +89,27 @@ const Dashboard = () => {
       }
     };
 
-    // SDK 로드 (중복 방지)
-    if (!window.kakao || !window.kakao.maps) {
-      const script = document.createElement("script");
-      script.src =
-        "//dapi.kakao.com/v2/maps/sdk.js?appkey=a9f14bb72d3f4b51ca67f444ebd92694&libraries=services&autoload=false";
-      script.async = true;
-      script.onload = loadMap;
-      document.head.appendChild(script);
-    } else {
+    // index.html에 이미 SDK 스크립트가 포함되어 있으므로 바로 로드
+    if (window.kakao && window.kakao.maps) {
       loadMap();
+    } else {
+      // SDK가 아직 로드되지 않았다면 잠시 기다림
+      console.log("카카오맵 SDK 로딩 대기 중...");
+      const checkKakao = setInterval(() => {
+        if (window.kakao && window.kakao.maps) {
+          clearInterval(checkKakao);
+          console.log("카카오맵 SDK 로드 완료");
+          loadMap();
+        }
+      }, 100);
+
+      // 10초 후에도 로드 안 되면 타임아웃
+      setTimeout(() => {
+        clearInterval(checkKakao);
+        if (!map) {
+          console.error("❌ 카카오맵 SDK 로드 타임아웃");
+        }
+      }, 10000);
     }
   }, []); // marker 제외 (중요!)
 
