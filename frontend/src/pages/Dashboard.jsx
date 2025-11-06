@@ -111,21 +111,38 @@ const Dashboard = () => {
       return;
     }
 
+    console.log("=== 검색 디버깅 ===");
+    console.log("window.kakao:", window.kakao);
+    console.log("window.kakao.maps:", window.kakao.maps);
+    console.log("window.kakao.maps.services:", window.kakao.maps.services);
+    console.log("검색어:", searchQuery);
+
     try {
-      console.log("검색 시작:", searchQuery);
+      if (!window.kakao.maps.services) {
+        console.error("services 라이브러리가 없습니다!");
+        alert("검색 서비스 라이브러리가 로드되지 않았습니다. 페이지를 새로고침해주세요.");
+        return;
+      }
+
+      console.log("Places 객체 생성 시도...");
       const ps = new window.kakao.maps.services.Places();
+      console.log("Places 객체 생성 성공:", ps);
 
       ps.keywordSearch(searchQuery, (data, status) => {
-        console.log("검색 결과:", status, data);
+        console.log("검색 콜백 실행 - status:", status);
+        console.log("검색 콜백 실행 - data:", data);
 
         if (status === window.kakao.maps.services.Status.OK) {
           const place = data[0];
           const coords = new window.kakao.maps.LatLng(place.y, place.x);
 
-          console.log("장소 찾음:", place.place_name, coords);
+          console.log("장소 찾음:", place.place_name, "좌표:", coords);
 
           // 기존 마커 제거
-          if (markerRef.current) markerRef.current.setMap(null);
+          if (markerRef.current) {
+            markerRef.current.setMap(null);
+            console.log("기존 마커 제거됨");
+          }
 
           // 새 마커 표시
           const newMarker = new window.kakao.maps.Marker({
@@ -143,13 +160,15 @@ const Dashboard = () => {
         } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
           alert("검색 결과가 없습니다. 다른 키워드로 검색해주세요.");
         } else {
-          console.error("검색 실패:", status);
+          console.error("검색 실패 - status:", status);
           alert("검색 중 오류가 발생했습니다.");
         }
       });
     } catch (error) {
-      console.error("검색 기능 오류:", error);
-      alert("검색 서비스를 초기화하는 중 오류가 발생했습니다. 페이지를 새로고침해주세요.");
+      console.error("검색 기능 오류 상세:", error);
+      console.error("오류 메시지:", error.message);
+      console.error("오류 스택:", error.stack);
+      alert(`검색 기능 오류: ${error.message}\n\n브라우저 콘솔(F12)을 확인해주세요.`);
     }
   };
 
