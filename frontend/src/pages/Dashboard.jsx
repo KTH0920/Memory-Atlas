@@ -388,6 +388,8 @@ const Dashboard = () => {
                       alt={m.title}
                       style={{
                         width: "100%",
+                        height: "250px",
+                        objectFit: "cover",
                         borderRadius: "10px",
                         marginBottom: "10px",
                       }}
@@ -435,11 +437,14 @@ const Dashboard = () => {
                       style={{
                         flex: 1,
                         padding: "10px",
+                        fontSize: "14px",
                         backgroundColor: "#4CAF50",
                         color: "white",
                         border: "none",
                         borderRadius: "5px",
-                        cursor: "pointer",
+                        cursor: loading ? "not-allowed" : "pointer",
+                        fontWeight: "500",
+                        opacity: loading ? 0.7 : 1,
                       }}
                     >
                       {loading ? "저장 중..." : "저장"}
@@ -450,11 +455,13 @@ const Dashboard = () => {
                       style={{
                         flex: 1,
                         padding: "10px",
+                        fontSize: "14px",
                         backgroundColor: "#999",
                         color: "white",
                         border: "none",
                         borderRadius: "5px",
                         cursor: "pointer",
+                        fontWeight: "500",
                       }}
                     >
                       취소
@@ -470,6 +477,8 @@ const Dashboard = () => {
                       alt={m.title}
                       style={{
                         width: "100%",
+                        height: "250px",
+                        objectFit: "cover",
                         borderRadius: "10px",
                         marginBottom: "10px",
                       }}
@@ -486,12 +495,14 @@ const Dashboard = () => {
                       onClick={() => handleEditStart(m)}
                       style={{
                         flex: 1,
-                        padding: "8px",
+                        padding: "10px",
+                        fontSize: "14px",
                         backgroundColor: "#2196F3",
                         color: "white",
                         border: "none",
                         borderRadius: "5px",
                         cursor: "pointer",
+                        fontWeight: "500",
                       }}
                     >
                       수정
@@ -501,12 +512,14 @@ const Dashboard = () => {
                       onClick={() => handleDelete(m._id)}
                       style={{
                         flex: 1,
-                        padding: "8px",
+                        padding: "10px",
+                        fontSize: "14px",
                         backgroundColor: "#f44336",
                         color: "white",
                         border: "none",
                         borderRadius: "5px",
                         cursor: "pointer",
+                        fontWeight: "500",
                       }}
                     >
                       삭제
