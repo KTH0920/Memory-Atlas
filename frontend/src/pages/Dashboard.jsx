@@ -96,14 +96,32 @@ const Dashboard = () => {
 
   // ✅ 장소 검색
   const handleSearch = () => {
-    if (!searchQuery.trim() || !map) return;
+    if (!searchQuery.trim()) {
+      alert("검색어를 입력해주세요.");
+      return;
+    }
 
+    if (!map) {
+      alert("지도가 로드되지 않았습니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
+
+    if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) {
+      alert("카카오맵 서비스가 로드되지 않았습니다.");
+      return;
+    }
+
+    console.log("검색 시작:", searchQuery);
     const ps = new window.kakao.maps.services.Places();
 
     ps.keywordSearch(searchQuery, (data, status) => {
+      console.log("검색 결과:", status, data);
+
       if (status === window.kakao.maps.services.Status.OK) {
         const place = data[0];
         const coords = new window.kakao.maps.LatLng(place.y, place.x);
+
+        console.log("장소 찾음:", place.place_name, coords);
 
         // 기존 마커 제거
         if (markerRef.current) markerRef.current.setMap(null);
@@ -119,12 +137,22 @@ const Dashboard = () => {
 
         setLat(coords.getLat());
         setLng(coords.getLng());
+
+        alert(`📍 ${place.place_name}로 이동했습니다.`);
       } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
-        alert("검색 결과가 없습니다.");
+        alert("검색 결과가 없습니다. 다른 키워드로 검색해주세요.");
       } else {
+        console.error("검색 실패:", status);
         alert("검색 중 오류가 발생했습니다.");
       }
     });
+  };
+
+  // Enter 키로 검색
+  const handleSearchKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
   };
 
   // ✅ 추억 추가
@@ -216,6 +244,7 @@ const Dashboard = () => {
             placeholder="장소를 검색하세요 (예: 진접역)"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyPress={handleSearchKeyPress}
           />
           <button type="button" onClick={handleSearch}>
             검색
