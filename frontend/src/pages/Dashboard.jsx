@@ -106,46 +106,51 @@ const Dashboard = () => {
       return;
     }
 
-    if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) {
-      alert("카카오맵 서비스가 로드되지 않았습니다.");
+    if (!window.kakao || !window.kakao.maps) {
+      alert("카카오맵이 로드되지 않았습니다.");
       return;
     }
 
-    console.log("검색 시작:", searchQuery);
-    const ps = new window.kakao.maps.services.Places();
+    try {
+      console.log("검색 시작:", searchQuery);
+      const ps = new window.kakao.maps.services.Places();
 
-    ps.keywordSearch(searchQuery, (data, status) => {
-      console.log("검색 결과:", status, data);
+      ps.keywordSearch(searchQuery, (data, status) => {
+        console.log("검색 결과:", status, data);
 
-      if (status === window.kakao.maps.services.Status.OK) {
-        const place = data[0];
-        const coords = new window.kakao.maps.LatLng(place.y, place.x);
+        if (status === window.kakao.maps.services.Status.OK) {
+          const place = data[0];
+          const coords = new window.kakao.maps.LatLng(place.y, place.x);
 
-        console.log("장소 찾음:", place.place_name, coords);
+          console.log("장소 찾음:", place.place_name, coords);
 
-        // 기존 마커 제거
-        if (markerRef.current) markerRef.current.setMap(null);
+          // 기존 마커 제거
+          if (markerRef.current) markerRef.current.setMap(null);
 
-        // 새 마커 표시
-        const newMarker = new window.kakao.maps.Marker({
-          map: map,
-          position: coords,
-        });
+          // 새 마커 표시
+          const newMarker = new window.kakao.maps.Marker({
+            map: map,
+            position: coords,
+          });
 
-        markerRef.current = newMarker;
-        map.setCenter(coords);
+          markerRef.current = newMarker;
+          map.setCenter(coords);
 
-        setLat(coords.getLat());
-        setLng(coords.getLng());
+          setLat(coords.getLat());
+          setLng(coords.getLng());
 
-        alert(`📍 ${place.place_name}로 이동했습니다.`);
-      } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
-        alert("검색 결과가 없습니다. 다른 키워드로 검색해주세요.");
-      } else {
-        console.error("검색 실패:", status);
-        alert("검색 중 오류가 발생했습니다.");
-      }
-    });
+          alert(`📍 ${place.place_name}로 이동했습니다.`);
+        } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
+          alert("검색 결과가 없습니다. 다른 키워드로 검색해주세요.");
+        } else {
+          console.error("검색 실패:", status);
+          alert("검색 중 오류가 발생했습니다.");
+        }
+      });
+    } catch (error) {
+      console.error("검색 기능 오류:", error);
+      alert("검색 서비스를 초기화하는 중 오류가 발생했습니다. 페이지를 새로고침해주세요.");
+    }
   };
 
   // Enter 키로 검색
