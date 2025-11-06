@@ -98,7 +98,20 @@ const updateMemory = async (req, res) => {
 
     // 새 이미지 업로드 시 교체
     if (req.file) {
-      memory.imageUrl = req.file.location;
+      const key = `memory/${uuidv4()}_${req.file.originalname}`;
+
+      await s3.send(
+        new PutObjectCommand({
+          Bucket: process.env.AWS_BUCKET,
+          Key: key,
+          Body: req.file.buffer,
+          ContentType: req.file.mimetype,
+          ACL: "public-read",
+        })
+      );
+
+      const imageUrl = `https://${process.env.AWS_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+      memory.imageUrl = imageUrl;
     }
 
     if (title) memory.title = title;

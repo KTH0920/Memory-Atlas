@@ -16,6 +16,12 @@ const Dashboard = () => {
   const markerRef = useRef(null); // useState 대신 useRef 사용
   const [searchQuery, setSearchQuery] = useState("");
 
+  // 수정 기능 상태
+  const [editingId, setEditingId] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDesc, setEditDesc] = useState("");
+  const [editImage, setEditImage] = useState(null);
+
   // ✅ 로그인 유저의 추억 목록 불러오기
   const fetchMemories = async () => {
     try {
@@ -244,6 +250,55 @@ const Dashboard = () => {
     }
   };
 
+  // ✅ 수정 모드 시작
+  const handleEditStart = (memory) => {
+    setEditingId(memory._id);
+    setEditTitle(memory.title);
+    setEditDesc(memory.desc);
+    setEditImage(null); // 새 이미지는 null로 초기화
+  };
+
+  // ✅ 수정 취소
+  const handleEditCancel = () => {
+    setEditingId(null);
+    setEditTitle("");
+    setEditDesc("");
+    setEditImage(null);
+  };
+
+  // ✅ 추억 수정
+  const handleUpdate = async (id) => {
+    if (!editTitle.trim() || !editDesc.trim()) {
+      return alert("제목과 내용을 입력해주세요!");
+    }
+
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("title", editTitle);
+    formData.append("desc", editDesc);
+    if (editImage) {
+      formData.append("image", editImage);
+    }
+
+    try {
+      const res = await api.patch(`/memories/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      alert("추억이 수정되었습니다!");
+
+      // 목록 갱신
+      setMemories(memories.map((m) => (m._id === id ? res.data.memory : m)));
+
+      // 수정 모드 종료
+      handleEditCancel();
+    } catch (err) {
+      console.error("수정 실패:", err);
+      alert("수정 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="dashboard-container">
       {/* 상단 헤더 */}
@@ -324,28 +379,141 @@ const Dashboard = () => {
         ) : (
           memories.map((m) => (
             <div key={m._id} className="memory-card">
-              {m.imageUrl && (
-                <img
-                  src={m.imageUrl}
-                  alt={m.title}
-                  style={{
-                    width: "100%",
-                    borderRadius: "10px",
-                    marginBottom: "10px",
-                  }}
-                />
+              {editingId === m._id ? (
+                // 수정 모드
+                <div className="edit-form">
+                  {m.imageUrl && (
+                    <img
+                      src={m.imageUrl}
+                      alt={m.title}
+                      style={{
+                        width: "100%",
+                        borderRadius: "10px",
+                        marginBottom: "10px",
+                      }}
+                    />
+                  )}
+                  <input
+                    type="text"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    placeholder="제목"
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      marginBottom: "10px",
+                      borderRadius: "5px",
+                      border: "1px solid #ddd",
+                    }}
+                  />
+                  <textarea
+                    value={editDesc}
+                    onChange={(e) => setEditDesc(e.target.value)}
+                    placeholder="내용"
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      marginBottom: "10px",
+                      borderRadius: "5px",
+                      border: "1px solid #ddd",
+                      minHeight: "100px",
+                    }}
+                  />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setEditImage(e.target.files[0])}
+                    style={{
+                      marginBottom: "10px",
+                    }}
+                  />
+                  <div style={{ display: "flex", gap: "10px" }}>
+                    <button
+                      className="save-btn"
+                      onClick={() => handleUpdate(m._id)}
+                      disabled={loading}
+                      style={{
+                        flex: 1,
+                        padding: "10px",
+                        backgroundColor: "#4CAF50",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {loading ? "저장 중..." : "저장"}
+                    </button>
+                    <button
+                      className="cancel-btn"
+                      onClick={handleEditCancel}
+                      style={{
+                        flex: 1,
+                        padding: "10px",
+                        backgroundColor: "#999",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      취소
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                // 일반 표시 모드
+                <>
+                  {m.imageUrl && (
+                    <img
+                      src={m.imageUrl}
+                      alt={m.title}
+                      style={{
+                        width: "100%",
+                        borderRadius: "10px",
+                        marginBottom: "10px",
+                      }}
+                    />
+                  )}
+                  <h3>{m.title}</h3>
+                  <p>{m.desc}</p>
+                  <span className="date">
+                    {new Date(m.date).toLocaleDateString()}
+                  </span>
+                  <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                    <button
+                      className="edit-btn"
+                      onClick={() => handleEditStart(m)}
+                      style={{
+                        flex: 1,
+                        padding: "8px",
+                        backgroundColor: "#2196F3",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      수정
+                    </button>
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleDelete(m._id)}
+                      style={{
+                        flex: 1,
+                        padding: "8px",
+                        backgroundColor: "#f44336",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      삭제
+                    </button>
+                  </div>
+                </>
               )}
-              <h3>{m.title}</h3>
-              <p>{m.desc}</p>
-              <span className="date">
-                {new Date(m.date).toLocaleDateString()}
-              </span>
-              <button
-                className="delete-btn"
-                onClick={() => handleDelete(m._id)}
-              >
-                삭제
-              </button>
             </div>
           ))
         )}
