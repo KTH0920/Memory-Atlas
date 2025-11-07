@@ -39,70 +39,114 @@ const AdminDashboard = () => {
     fetchData();
   }, []);
 
-  if (!stats) return <div>로딩 중...</div>;
+  const handleLogout = () => {
+    if (window.confirm("정말 로그아웃 하시겠습니까?")) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      navigate("/login");
+    }
+  };
+
+  if (!stats) {
+    return (
+      <div className="dashboard-container" style={{ textAlign: "center", padding: "100px 20px" }}>
+        <div className="loading"></div>
+        <p style={{ marginTop: "20px", color: "#64748b" }}>로딩 중...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="container">
-      <h1>👑 관리자 대시보드</h1>
+    <div className="dashboard-container admin-dashboard">
+      {/* 헤더 */}
+      <div className="dashboard-header">
+        <h1 className="page-title">👑 관리자 대시보드</h1>
+        <div className="header-buttons">
+          <button className="logout-btn" onClick={handleLogout}>
+            로그아웃
+          </button>
+        </div>
+      </div>
 
-      <section className="stats">
-        <h2>📊 통계</h2>
-        <p>
-          전체 유저 수: <b>{stats.userCount}</b>
-        </p>
-        <p>
-          전체 추억 수: <b>{stats.memoryCount}</b>
-        </p>
-        <p>
-          최근 7일 등록된 추억: <b>{stats.recentMemories}</b>
-        </p>
-      </section>
+      {/* 통계 카드 */}
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-icon">👥</div>
+          <div className="stat-info">
+            <h3>전체 유저</h3>
+            <p className="stat-number">{stats.userCount}</p>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon">📸</div>
+          <div className="stat-info">
+            <h3>전체 추억</h3>
+            <p className="stat-number">{stats.memoryCount}</p>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon">⭐</div>
+          <div className="stat-info">
+            <h3>최근 7일</h3>
+            <p className="stat-number">{stats.recentMemories}</p>
+          </div>
+        </div>
+      </div>
 
-      <hr />
-
-      <section className="users">
-        <h2>👥 사용자 목록</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>이메일</th>
-              <th>닉네임</th>
-              <th>권한</th>
-              <th>가입일</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((u) => (
-              <tr key={u._id}>
-                <td>{u.email}</td>
-                <td>{u.nickname}</td>
-                <td>{u.role}</td>
-                <td>
-                  {u.createdAt
-                    ? new Date(u.createdAt).toLocaleDateString()
-                    : "-"}
-                </td>
+      {/* 사용자 목록 */}
+      <section className="admin-section">
+        <h2 className="section-title">👥 사용자 목록</h2>
+        <div className="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>이메일</th>
+                <th>닉네임</th>
+                <th>권한</th>
+                <th>가입일</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {users.map((u) => (
+                <tr key={u._id}>
+                  <td>{u.email}</td>
+                  <td>{u.nickname}</td>
+                  <td>
+                    <span className={`role-badge ${u.role}`}>
+                      {u.role === "admin" ? "관리자" : "사용자"}
+                    </span>
+                  </td>
+                  <td>
+                    {u.createdAt
+                      ? new Date(u.createdAt).toLocaleDateString()
+                      : "-"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
-      <hr />
-
-      <section className="memories">
-        <h2>🖼️ 등록된 추억</h2>
+      {/* 등록된 추억 */}
+      <section className="admin-section">
+        <h2 className="section-title">🖼️ 등록된 추억</h2>
         <div className="memory-list">
           {memories.map((m) => (
             <div key={m._id} className="memory-card">
-              <img src={m.imageUrl} alt={m.title} width="200" />
-              <h3>{m.title}</h3>
-              <p>{m.desc}</p>
-              <small>
-                작성자: {m.createdBy?.nickname || "알 수 없음"}
-                <br />
-                {m.date ? new Date(m.date).toLocaleDateString() : "-"}
-              </small>
+              <div className="memory-card-content">
+                {m.imageUrl && <img src={m.imageUrl} alt={m.title} />}
+                <h3>{m.title}</h3>
+                <p>{m.desc}</p>
+                <div className="memory-meta">
+                  <span className="author">
+                    👤 {m.createdBy?.nickname || "알 수 없음"}
+                  </span>
+                  <span className="date">
+                    {m.date ? new Date(m.date).toLocaleDateString() : "-"}
+                  </span>
+                </div>
+              </div>
             </div>
           ))}
         </div>
