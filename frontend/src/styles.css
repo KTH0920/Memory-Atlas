@@ -377,7 +377,6 @@ th {
 
 .search-container input[type="text"] {
   flex: 1;
-  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 0.95rem;
@@ -415,4 +414,43 @@ th {
 .add-memory-btn:hover {
   background: #45a049;
 }
+}
+
+/* ======================= 검색 및 정렬 섹션 ======================= */
+.filter-section {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  padding: 15px;
+  background: #f7f9ff;
+  border-radius: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 200px;
+}
+
+.sort-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 768px) {
+  .filter-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-box {
+    width: 100%;
+  }
+  
+  .sort-box {
+    width: 100%;
+    justify-content: flex-start;
+  }
 }
