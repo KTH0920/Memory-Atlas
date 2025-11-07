@@ -1,4 +1,3 @@
-/* ======================= 기본 설정 ======================= */
 body {
   font-family: "Pretendard", "Noto Sans KR", sans-serif;
   background: #f9fbff;
@@ -7,7 +6,6 @@ body {
   color: #222;
 }
 
-/* ======================= 공통 컨테이너 ======================= */
 .container {
   max-width: 600px;
   margin: 60px auto;
@@ -17,7 +15,6 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* ======================= 입력폼, 버튼, 테이블 ======================= */
 input,
 textarea,
 button {
@@ -44,7 +41,6 @@ button:hover {
   background: #3a66e0;
 }
 
-/* ======================= 테이블 ======================= */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -66,7 +62,6 @@ th {
   margin: 5px 0;
 }
 
-/* ======================= 카드형 메모리 리스트 ======================= */
 .memory-list {
   display: flex;
   flex-wrap: wrap;
@@ -172,7 +167,6 @@ th {
   background: #2980b9;
 }
 
-/* ======================= Dashboard ======================= */
 .dashboard-container {
   max-width: 1200px;
   margin: 60px auto;
@@ -236,7 +230,6 @@ th {
   margin-top: 20px;
 }
 
-/* ======================= 로그인 화면 ======================= */
 .login-container {
   display: flex;
   flex-direction: column;
@@ -290,7 +283,6 @@ th {
   background: #3a66e0;
 }
 
-/* ======================= 로그인 하단 텍스트 링크 ======================= */
 .register-text {
   font-size: 14px;
   color: #555;
@@ -311,7 +303,6 @@ th {
   text-decoration: underline;
 }
 
-/* ======================= 반응형 ======================= */
 @media (max-width: 480px) {
   .login-form {
     padding: 30px 25px;
@@ -335,7 +326,6 @@ th {
   }
 }
 
-/* ======================= 로그아웃 버튼 (최종 수정) ======================= */
 .logout-btn {
   background: #ff5c5c;
   color: #fff;
@@ -355,7 +345,6 @@ th {
   background: #e74c3c;
 }
 
-/* ======================= 지도 보기 버튼 ======================= */
 .header-buttons {
   display: flex;
   gap: 8px;
@@ -379,7 +368,6 @@ th {
   background: #3559c7;
 }
 
-/* ======================= 지도 검색 ======================= */
 .search-container {
   display: flex;
   gap: 8px;
@@ -409,4 +397,22 @@ th {
 
 .search-container button:hover {
   background-color: #3a66e0;
+}
+
+.add-memory-btn {
+  background: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease;
+  width: auto !important;
+}
+
+.add-memory-btn:hover {
+  background: #45a049;
+}
 }

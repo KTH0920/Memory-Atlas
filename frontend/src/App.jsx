@@ -2,11 +2,11 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
+import MyPage from "./pages/MyPage";
 import AddMemory from "./pages/AddMemory";
 import AdminDashboard from "./pages/AdminDashboard";
-import MapView from "./pages/MapView"; // ✅ 지도 페이지 추가
-import ProtectedRoute from "./components/ProtectedRoute"; // ✅ 보호 라우트
+import MapView from "./pages/MapView";
+import ProtectedRoute from "./components/ProtectedRoute";
 import "./styles.css";
 
 function App() {
@@ -20,10 +20,10 @@ function App() {
 
         {/* ✅ 보호된 유저 라우트 */}
         <Route
-          path="/dashboard"
+          path="/mypage"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <MyPage />
             </ProtectedRoute>
           }
         />
