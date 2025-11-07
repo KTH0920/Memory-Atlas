@@ -429,7 +429,7 @@ const Dashboard = () => {
                       marginBottom: "10px",
                     }}
                   />
-                  <div style={{ display: "flex", gap: "10px" }}>
+                  <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                     <button
                       className="save-btn"
                       onClick={() => handleUpdate(m._id)}
@@ -446,6 +446,7 @@ const Dashboard = () => {
                         cursor: loading ? "not-allowed" : "pointer",
                         fontWeight: "500",
                         opacity: loading ? 0.7 : 1,
+                        boxSizing: "border-box",
                       }}
                     >
                       {loading ? "저장 중..." : "저장"}
@@ -464,6 +465,7 @@ const Dashboard = () => {
                         borderRadius: "5px",
                         cursor: "pointer",
                         fontWeight: "500",
+                        boxSizing: "border-box",
                       }}
                     >
                       취소
@@ -491,7 +493,7 @@ const Dashboard = () => {
                   <span className="date">
                     {new Date(m.date).toLocaleDateString()}
                   </span>
-                  <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                  <div style={{ display: "flex", gap: "10px", marginTop: "10px", alignItems: "center" }}>
                     <button
                       className="edit-btn"
                       onClick={() => handleEditStart(m)}
@@ -506,6 +508,7 @@ const Dashboard = () => {
                         borderRadius: "5px",
                         cursor: "pointer",
                         fontWeight: "500",
+                        boxSizing: "border-box",
                       }}
                     >
                       수정
@@ -524,6 +527,7 @@ const Dashboard = () => {
                         borderRadius: "5px",
                         cursor: "pointer",
                         fontWeight: "500",
+                        boxSizing: "border-box",
                       }}
                     >
                       삭제
