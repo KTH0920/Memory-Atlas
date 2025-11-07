@@ -388,7 +388,7 @@ const Dashboard = () => {
                       alt={m.title}
                       style={{
                         width: "100%",
-                        height: "250px",
+                        height: "350px",
                         objectFit: "cover",
                         borderRadius: "10px",
                         marginBottom: "10px",
@@ -436,6 +436,7 @@ const Dashboard = () => {
                       disabled={loading}
                       style={{
                         flex: 1,
+                        height: "42px",
                         padding: "10px",
                         fontSize: "14px",
                         backgroundColor: "#4CAF50",
@@ -454,6 +455,7 @@ const Dashboard = () => {
                       onClick={handleEditCancel}
                       style={{
                         flex: 1,
+                        height: "42px",
                         padding: "10px",
                         fontSize: "14px",
                         backgroundColor: "#999",
@@ -477,7 +479,7 @@ const Dashboard = () => {
                       alt={m.title}
                       style={{
                         width: "100%",
-                        height: "250px",
+                        height: "350px",
                         objectFit: "cover",
                         borderRadius: "10px",
                         marginBottom: "10px",
@@ -495,6 +497,7 @@ const Dashboard = () => {
                       onClick={() => handleEditStart(m)}
                       style={{
                         flex: 1,
+                        height: "42px",
                         padding: "10px",
                         fontSize: "14px",
                         backgroundColor: "#2196F3",
@@ -512,6 +515,7 @@ const Dashboard = () => {
                       onClick={() => handleDelete(m._id)}
                       style={{
                         flex: 1,
+                        height: "42px",
                         padding: "10px",
                         fontSize: "14px",
                         backgroundColor: "#f44336",
