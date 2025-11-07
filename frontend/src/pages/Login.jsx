@@ -16,7 +16,7 @@ const Login = () => {
 
       const role = res.data.user.role;
       if (role === "admin") navigate("/admin");
-      else navigate("/dashboard");
+      else navigate("/mypage");
     } catch (err) {
       alert("❌ 로그인 실패: " + (err.response?.data?.message || "서버 오류"));
     }

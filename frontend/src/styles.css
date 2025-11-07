@@ -360,3 +360,21 @@ th {
 .search-container button:hover {
   background-color: #3a66e0;
 }
+
+/* ======================= 추억 등록 버튼 ======================= */
+.add-memory-btn {
+  background: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease;
+  width: auto !important;
+}
+
+.add-memory-btn:hover {
+  background: #45a049;
+}
