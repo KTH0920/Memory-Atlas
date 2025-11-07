@@ -165,30 +165,13 @@ const MyPage = () => {
             placeholder="🔍 제목 또는 내용 검색..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              flex: 1,
-              padding: "10px 15px",
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              fontSize: "14px",
-            }}
           />
         </div>
         <div className="sort-box">
-          <label style={{ fontSize: "14px", color: "#666", marginRight: "8px" }}>
-            정렬:
-          </label>
+          <label>정렬:</label>
           <select
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
-            style={{
-              padding: "8px 12px",
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              fontSize: "14px",
-              cursor: "pointer",
-              backgroundColor: "white",
-            }}
           >
             <option value="latest">최신순</option>
             <option value="oldest">오래된순</option>
@@ -209,92 +192,32 @@ const MyPage = () => {
               {editingId === m._id ? (
                 // 수정 모드
                 <div className="edit-form">
-                  {m.imageUrl && (
-                    <img
-                      src={m.imageUrl}
-                      alt={m.title}
-                      style={{
-                        width: "100%",
-                        height: "250px",
-                        objectFit: "cover",
-                        borderRadius: "10px",
-                        marginBottom: "10px",
-                      }}
-                    />
-                  )}
+                  {m.imageUrl && <img src={m.imageUrl} alt={m.title} />}
                   <input
                     type="text"
                     value={editTitle}
                     onChange={(e) => setEditTitle(e.target.value)}
                     placeholder="제목"
-                    style={{
-                      width: "100%",
-                      padding: "10px",
-                      marginBottom: "10px",
-                      borderRadius: "5px",
-                      border: "1px solid #ddd",
-                    }}
                   />
                   <textarea
                     value={editDesc}
                     onChange={(e) => setEditDesc(e.target.value)}
                     placeholder="내용"
-                    style={{
-                      width: "100%",
-                      padding: "10px",
-                      marginBottom: "10px",
-                      borderRadius: "5px",
-                      border: "1px solid #ddd",
-                      minHeight: "100px",
-                    }}
                   />
                   <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => setEditImage(e.target.files[0])}
-                    style={{
-                      marginBottom: "10px",
-                    }}
                   />
-                  <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                  <div className="memory-card-actions">
                     <button
                       className="save-btn"
                       onClick={() => handleUpdate(m._id)}
                       disabled={loading}
-                      style={{
-                        flex: 1,
-                        height: "42px",
-                        padding: "10px",
-                        fontSize: "14px",
-                        backgroundColor: "#4CAF50",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: loading ? "not-allowed" : "pointer",
-                        fontWeight: "500",
-                        opacity: loading ? 0.7 : 1,
-                        boxSizing: "border-box",
-                      }}
                     >
                       {loading ? "저장 중..." : "저장"}
                     </button>
-                    <button
-                      className="cancel-btn"
-                      onClick={handleEditCancel}
-                      style={{
-                        flex: 1,
-                        height: "42px",
-                        padding: "10px",
-                        fontSize: "14px",
-                        backgroundColor: "#999",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        fontWeight: "500",
-                        boxSizing: "border-box",
-                      }}
-                    >
+                    <button className="cancel-btn" onClick={handleEditCancel}>
                       취소
                     </button>
                   </div>
@@ -302,60 +225,24 @@ const MyPage = () => {
               ) : (
                 // 일반 표시 모드
                 <>
-                  {m.imageUrl && (
-                    <img
-                      src={m.imageUrl}
-                      alt={m.title}
-                      style={{
-                        width: "100%",
-                        height: "250px",
-                        objectFit: "cover",
-                        borderRadius: "10px",
-                        marginBottom: "10px",
-                      }}
-                    />
-                  )}
-                  <h3>{m.title}</h3>
-                  <p>{m.desc}</p>
-                  <span className="date">
-                    {new Date(m.date).toLocaleDateString()}
-                  </span>
-                  <div style={{ display: "flex", gap: "10px", marginTop: "10px", alignItems: "center" }}>
+                  <div className="memory-card-content">
+                    {m.imageUrl && <img src={m.imageUrl} alt={m.title} />}
+                    <h3>{m.title}</h3>
+                    <p>{m.desc}</p>
+                    <span className="date">
+                      {new Date(m.date).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <div className="memory-card-actions">
                     <button
                       className="edit-btn"
                       onClick={() => handleEditStart(m)}
-                      style={{
-                        flex: 1,
-                        height: "42px",
-                        padding: "10px",
-                        fontSize: "14px",
-                        backgroundColor: "#2196F3",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        fontWeight: "500",
-                        boxSizing: "border-box",
-                      }}
                     >
                       수정
                     </button>
                     <button
                       className="delete-btn"
                       onClick={() => handleDelete(m._id)}
-                      style={{
-                        flex: 1,
-                        height: "42px",
-                        padding: "10px",
-                        fontSize: "14px",
-                        backgroundColor: "#f44336",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        fontWeight: "500",
-                        boxSizing: "border-box",
-                      }}
                     >
                       삭제
                     </button>

@@ -20,31 +20,38 @@ const Register = () => {
   };
 
   return (
-    <div className="container">
-      <h2>회원가입</h2>
-      <form onSubmit={handleRegister}>
+    <div className="login-container">
+      <h1>🌟 Memory Atlas</h1>
+      <form onSubmit={handleRegister} className="login-form">
         <input
           type="email"
-          placeholder="이메일"
+          placeholder="📧 이메일"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
         <input
           type="text"
-          placeholder="닉네임"
+          placeholder="👤 닉네임"
           value={nickname}
           onChange={(e) => setNickname(e.target.value)}
           required
         />
         <input
           type="password"
-          placeholder="비밀번호"
+          placeholder="🔒 비밀번호"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit">회원가입</button>
+        <button type="submit" className="login-btn">회원가입</button>
+
+        <p className="register-text">
+          이미 계정이 있으신가요?{" "}
+          <span className="register-link" onClick={() => navigate("/login")}>
+            로그인
+          </span>
+        </p>
       </form>
     </div>
   );
