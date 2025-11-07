@@ -388,7 +388,7 @@ const Dashboard = () => {
                       alt={m.title}
                       style={{
                         width: "100%",
-                        height: "350px",
+                        height: "250px",
                         objectFit: "cover",
                         borderRadius: "10px",
                         marginBottom: "10px",
@@ -479,7 +479,7 @@ const Dashboard = () => {
                       alt={m.title}
                       style={{
                         width: "100%",
-                        height: "350px",
+                        height: "250px",
                         objectFit: "cover",
                         borderRadius: "10px",
                         marginBottom: "10px",
